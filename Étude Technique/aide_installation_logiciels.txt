@@ -1,0 +1,41 @@
+Télécharger et installer miniconda : https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
+Infos : https://conda.io/projects/conda/en/latest/user-guide/getting-started.html
+
+Pour installer spyder, le faire directement via anaconda : https://docs.spyder-ide.org/current/installation.html
+(toutes les commandes sont à taper dans anacondaprompt)
+
+conda create -c conda-forge -n spyder-env spyder numpy scipy pandas matplotlib sympy cython
+conda activate spyder-env
+conda config --env --add channels conda-forge
+conda config --env --set channel_priority strict
+
+Mise à jour :
+conda update -n base conda
+conda activate spyder-env
+conda update spyder
+
+Installer le kernel :
+conda install spyder-kernels=2.5
+
+Lancer Spyder (spyder-env) via windows
+
+Installer librairies :
+conda install numpy
+conda install matplotlib
+conda install numba
+conda install scipy
+conda install pylab
+
+conda install tabulate
+conda install pandas
+conda install pyinstaller	(  https://www.hebergeurcloud.com/convertir-python-en-executable/  )
+
+
+Créer un .exe :
+cd C:\Users\33642\Desktop\DOSSIER INDUS Simulations\Séquence BUT GEII\Séance 2
+pyinstaller --onefile seance_2_conduction_continue.py   ( et ensuite le .exe est dans le fichier dist)
+pyinstaller --onefile seance_2_complet_filtre_conduction_continue.py
+
+cd C:\Users\33642\Desktop\DOSSIER INDUS Simulations\Séquence BUT GEII\Séance 4
+pyinstaller --onefile seance_4_boost_tensions_conduction_continue.py 
+
