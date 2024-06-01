@@ -287,26 +287,6 @@ def plot_last_two_periods(T, Vaa, Va, Ia, Iaa, Iacond, Ts):
     plt.savefig("Ia_last_two_periods.svg")
     plt.show()
     
-    plt.figure(dpi=200)
-    plt.plot(T[last_two_periods_idx], Iaa[last_two_periods_idx], label='Iaa')
-    plt.xlabel('Temps (s)')
-    plt.ylabel('Courant (A)')
-    plt.title('Intensité dans Lfilt')
-    plt.legend()
-    plt.grid()
-    plt.savefig("Iaa_last_two_periods.svg")
-    plt.show()
-    
-    plt.figure(dpi=200)
-    plt.plot(T[last_two_periods_idx], Iacond[last_two_periods_idx], label='Iacond')
-    plt.xlabel('Temps (s)')
-    plt.ylabel('Courant (A)')
-    plt.title('Intensité dans le condensateur')
-    plt.legend()
-    plt.grid()
-    plt.savefig("Iacond_last_two_periods.svg")
-    plt.show()
-
 #%% Fonction principale
 def main():
     T, Vaa, Va, Ia, Iaa, Iacond = simulate()
