@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.interpolate import UnivariateSpline
 
-# Données extraites de la datasheet avec WebPlotDigitizer
+#%% Données extraites de la datasheet avec WebPlotDigitizer
 datasheet_points = [
     (-0.08728721338208342, 0.7330465682891363),
     (-0.04274318585263914, 0.7321047377223366),
@@ -207,6 +207,49 @@ def plot_spectrum_with_norms(frequency, spectrum_out_linear, simu_f_rangs, norme
     plt.title("Spectre linéaire du courant absorbé par la charge avec les normes")
     plt.legend()
     plt.grid()
+    plt.savefig("spectrum_linear.svg")  # Enregistrer la figure en SVG
+    plt.show()
+
+    # Conversion de la norme en dB
+    norme_intensites_dB = 10 * np.log10(norme_intensites)
+
+    # Création du graphe en dB
+    spectrum_out_dB = 10 * np.log10(spectrum_out_linear)
+    
+    plt.figure(dpi=200)  # Résolution de la figure
+    plt.plot(frequency, spectrum_out_dB, 'g', label='$I_{a}$', linewidth=1)  # Trace le spectre en vert
+
+    # Listes pour les croix rouges et bleues en dB
+    blue_x_dB = []
+    blue_y_dB = []
+    red_x_dB = []
+    red_y_dB = []
+
+    # Tracer les croix pour chaque point de la norme en dB
+    for i in range(len(simu_f_rangs)):
+        idx = np.argmin(np.abs(frequency - simu_f_rangs[i]))
+        norme_value_dB = norme_intensites_dB[i]
+        spectrum_value_dB = spectrum_out_dB[idx]
+
+        if norme_value_dB > spectrum_value_dB:  # Vérifier si le point est au-dessus du spectre
+            blue_x_dB.append(simu_f_rangs[i])
+            blue_y_dB.append(norme_value_dB)
+        else:
+            red_x_dB.append(simu_f_rangs[i])
+            red_y_dB.append(norme_value_dB)
+
+    # Tracer les croix bleues et rouges en dB
+    plt.scatter(blue_x_dB, blue_y_dB, color='blue', marker='x', label='Norme respectée')
+    plt.scatter(red_x_dB, red_y_dB, color='red', marker='x', label='Norme non respectée')
+
+    plt.xlim(0, 40 * Fs)  # Limite de l'axe des x inchangée
+    plt.ylim(-50, 20)  # Limite de l'axe des y entre -50 dB et +20 dB
+    plt.xlabel('Fréquence (Hz)')
+    plt.ylabel('Module en dB')
+    plt.title("Spectre en dB du courant absorbé par la charge avec les normes")
+    plt.legend()
+    plt.grid()
+    plt.savefig("spectrum_dB.svg")  # Enregistrer la figure en SVG
     plt.show()
 
 #%% Visualisation temporelle
@@ -220,15 +263,18 @@ def plot_last_two_periods(T, Vaa, Va, Ia, Iaa, Iacond, Ts):
     plt.title('Tensions bus DC découpée')
     plt.legend()
     plt.grid()
+    plt.savefig("Vaa_last_two_periods.svg")
     plt.show()
     
     plt.figure(dpi=200)
     plt.plot(T[last_two_periods_idx], Va[last_two_periods_idx], label='Va')
+    plt.ylim(-400, 400) 
     plt.xlabel('Temps (s)')
     plt.ylabel('Tension (V)')
     plt.title('Tension aux bornes de la charge')
     plt.legend()
     plt.grid()
+    plt.savefig("Va_last_two_periods.svg")
     plt.show()
     
     plt.figure(dpi=200)
@@ -238,6 +284,7 @@ def plot_last_two_periods(T, Vaa, Va, Ia, Iaa, Iacond, Ts):
     plt.title('Intensité dans la charge')
     plt.legend()
     plt.grid()
+    plt.savefig("Ia_last_two_periods.svg")
     plt.show()
     
     plt.figure(dpi=200)
@@ -247,6 +294,7 @@ def plot_last_two_periods(T, Vaa, Va, Ia, Iaa, Iacond, Ts):
     plt.title('Intensité dans Lfilt')
     plt.legend()
     plt.grid()
+    plt.savefig("Iaa_last_two_periods.svg")
     plt.show()
     
     plt.figure(dpi=200)
@@ -256,6 +304,7 @@ def plot_last_two_periods(T, Vaa, Va, Ia, Iaa, Iacond, Ts):
     plt.title('Intensité dans le condensateur')
     plt.legend()
     plt.grid()
+    plt.savefig("Iacond_last_two_periods.svg")
     plt.show()
 
 #%% Fonction principale
@@ -267,23 +316,26 @@ def main():
     
     # Affichage des spectres
     plt.figure(dpi=200)
-    plt.plot(frequency, spectrum_out_dB, 'r', label='$I_{a}$')
-    plt.xlim(0, 1.1 * Fd)  # Ajuster la limite de l'axe des x pour aller un peu au-delà de Fd
-    plt.xlabel('Fréquence (Hz)')
+    plt.plot(frequency/1000, spectrum_out_dB, 'r', label='$I_{a}$')
+    plt.xlim(0, 1.1 * Fd/1000)  # Ajuster la limite de l'axe des x pour aller un peu au-delà de Fd
+    plt.ylim(-80, 20) 
+    plt.xlabel('Fréquence (kHz)')
     plt.ylabel('Module en dB')
     plt.title("Spectre en dB du courant absorbé par la charge")
     plt.legend()
     plt.grid()
+    plt.savefig("spectrum_dB_main.svg")
     plt.show()
     
     plt.figure(dpi=200)
-    plt.plot(frequency, spectrum_out_linear, 'r', label='$I_{a}$')
-    plt.xlim(0, 1.1 * Fd)  # Ajuster la limite de l'axe des x pour aller un peu au-delà de Fd
-    plt.xlabel('Fréquence (Hz)')
+    plt.plot(frequency/1000, spectrum_out_linear, 'r', label='$I_{a}$')
+    plt.xlim(0, 1.1 * Fd/1000)  # Ajuster la limite de l'axe des x pour aller un peu au-delà de Fd
+    plt.xlabel('Fréquence (kHz)')
     plt.ylabel('Module en linéaire')
     plt.title("Spectre linéaire du courant absorbé par la charge")
     plt.legend()
     plt.grid()
+    plt.savefig("spectrum_linear_main.svg")
     plt.show()
     
     plot_spectrum_with_norms(frequency, spectrum_out_linear, simu_f_rangs, norme_intensites, Fs)
